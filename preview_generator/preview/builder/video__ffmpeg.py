@@ -130,6 +130,7 @@ class VideoPreviewBuilderFFMPEG(PreviewBuilder):
         preview_name: str,
         cache_path: str,
         page_id: int,
+        page_nb: int,
         extension: str = ".jpg",
         size: utils.ImgDims = None,
         mimetype: str = "",
@@ -149,7 +150,11 @@ class VideoPreviewBuilderFFMPEG(PreviewBuilder):
         extraction_size = self._get_extraction_size(video_size, size)
 
         video_duration = float(video_probe_data["format"]["duration"])
-        page_nb = self.get_page_number(file_path, preview_name, cache_path)
+
+        # to custom picture numbers
+        if not page_nb:
+            page_nb = self.get_page_number(file_path, preview_name, cache_path)
+
         frame_time = self._get_frame_time(page_id, page_nb, video_duration)
 
         (

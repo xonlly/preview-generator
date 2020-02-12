@@ -132,6 +132,7 @@ class PreviewManager(object):
         self,
         file_path: str,
         page: int = -1,
+        page_nb: int = None,
         width: int = None,
         height: int = 256,
         force: bool = False,
@@ -141,6 +142,7 @@ class PreviewManager(object):
         Return a JPEG preview of given file, according to parameters
         :param file_path: path of the file to preview
         :param page: page of the original document, if it makes sense
+        :param page_nb: custom number page of the original document, if it makes sense
         :param width: width of the requested preview image
         :param height: height of the requested preview image
         :param force: if True, do not use cached preview.
@@ -171,6 +173,7 @@ class PreviewManager(object):
                 preview_name=preview_name,
                 cache_path=self.cache_path,
                 page_id=page,
+                page_nb=page_nb,
                 extension=extension,
                 size=size,
                 mimetype=mimetype,
