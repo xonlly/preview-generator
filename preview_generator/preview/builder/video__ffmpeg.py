@@ -130,7 +130,7 @@ class VideoPreviewBuilderFFMPEG(PreviewBuilder):
         preview_name: str,
         cache_path: str,
         page_id: int,
-        page_nb: int,
+        page_nb: int = None,
         extension: str = ".jpg",
         size: utils.ImgDims = None,
         mimetype: str = "",
