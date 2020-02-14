@@ -132,6 +132,57 @@ class PreviewManager(object):
         self,
         file_path: str,
         page: int = -1,
+        width: int = None,
+        height: int = 256,
+        force: bool = False,
+        file_ext: str = "",
+    ) -> str:
+        """
+        Return a JPEG preview of given file, according to parameters
+        :param file_path: path of the file to preview
+        :param page: page of the original document, if it makes sense
+        :param page_nb: custom number page of the original document, if it makes sense
+        :param width: width of the requested preview image
+        :param height: height of the requested preview image
+        :param force: if True, do not use cached preview.
+        :param file_ext: extension associated to the file. Eg 'jpg'. May be empty -
+                it's usefull if the extension can't be found in file_path
+        :return: path to the generated preview file
+        """
+        if width is None:
+            width = height
+
+        size = ImgDims(width=width, height=height)
+        mimetype = self._factory.get_file_mimetype(file_path, file_ext)
+        builder = self._factory.get_preview_builder(mimetype)
+        extension = ".jpeg"
+
+        if type(builder) in [OfficePreviewBuilderLibreoffice, DocumentPreviewBuilderScribus]:
+            file_path = self.get_pdf_preview(file_path=file_path, force=force)
+
+        preview_name = self._get_file_hash(file_path, size, page)
+        mimetype = self._factory.get_file_mimetype(file_path, file_ext)
+        builder = self._factory.get_preview_builder(mimetype)
+
+        preview_file_path = os.path.join(self.cache_path, preview_name + extension)  # nopep8
+        page = max(page, 0)  # if page is -1 then return preview of first page
+        if force or not os.path.exists(preview_file_path):
+            builder.build_jpeg_preview(
+                file_path=file_path,
+                preview_name=preview_name,
+                cache_path=self.cache_path,
+                page_id=page,
+                extension=extension,
+                size=size,
+                mimetype=mimetype,
+            )
+
+        return preview_file_path
+
+    def get_video_jpeg_preview(
+        self,
+        file_path: str,
+        page: int = -1,
         page_nb: int = None,
         width: int = None,
         height: int = 256,
